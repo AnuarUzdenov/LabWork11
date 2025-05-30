@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TimePicker
+        android:id="@+id/timePickerOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:timePickerMode="spinner" />
+
+    <Button
+        android:id="@+id/setBluetoothOnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timePickerOn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="Установить время включения Bluetooth" />
+
+    <TimePicker
+        android:id="@+id/timePickerOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/setBluetoothOnButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:timePickerMode="spinner" />
+
+    <Button
+        android:id="@+id/setBluetoothOffButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timePickerOff"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="Установить время выключения Bluetooth" />
+
+</RelativeLayout>
