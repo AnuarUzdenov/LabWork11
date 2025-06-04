@@ -1,96 +1,122 @@
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText etArray;
-    private Button btnCalculate;
-    private TextView tvZeroCount, tvSumAfterMin;
+    private ImageView imgView;
     private ProgressBar progressBar;
+    private TextView resultTextView;
+    private double[] array;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etArray = findViewById(R.id.etArray);
-        btnCalculate = findViewById(R.id.btnCalculate);
-        tvZeroCount = findViewById(R.id.tvZeroCount);
-        tvSumAfterMin = findViewById(R.id.tvSumAfterMin);
+        imgView = findViewById(R.id.imgView);
         progressBar = findViewById(R.id.progressBar);
+        resultTextView = findViewById(R.id.resultTextView);
 
-        btnCalculate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String input = etArray.getText().toString();
-                if (input.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Введите массив", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                new CalculateTask().execute(input);
-            }
-        });
+        generateArray();
     }
 
-    private class CalculateTask extends AsyncTask<String, Void, String[]> {
+    private void generateArray() {
+        Random random = new Random();
+        array = new double[20];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = random.nextDouble() * 100 - 50;
+        }
+    }
+
+    public void btnDownloadClick(View view) {
+        DownloadTask task = new DownloadTask();
+        task.execute("http://www.ncfu.ru/templates/current/images/logotype.png");
+    }
+
+    public void btnCalculateClick(View view) {
+        CalculateTask task = new CalculateTask();
+        task.execute();
+    }
+
+    private Bitmap downloadImage(String url) {
+        try {
+            return BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private class DownloadTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected String[] doInBackground(String... strings) {
-            String input = strings[0];
-            String[] parts = input.split(",");
-            double[] array = new double[parts.length];
-            for (int i = 0; i < parts.length; i++) {
-                try {
-                    array[i] = Double.parseDouble(parts[i].trim());
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            }
-
-            int zeroCount = 0;
-            for (double num : array) {
-                if (num == 0) zeroCount++;
-            }
-
-            double min = array[0];
-            int minIndex = 0;
-            for (int i = 1; i < array.length; i++) {
-                if (array[i] < min) {
-                    min = array[i];
-                    minIndex = i;
-                }
-            }
-
-            double sumAfterMin = 0;
-            for (int i = minIndex + 1; i < array.length; i++) {
-                sumAfterMin += array[i];
-            }
-
-            return new String[]{
-                    String.valueOf(zeroCount),
-                    String.valueOf(sumAfterMin)
-            };
+        protected Bitmap doInBackground(String... strings) {
+            return downloadImage(strings[0]);
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(Bitmap bitmap) {
+            imgView.setImageBitmap(bitmap);
             progressBar.setVisibility(View.GONE);
-            if (result == null) {
-                Toast.makeText(MainActivity.this, "Ошибка ввода данных", Toast.LENGTH_SHORT).show();
-                return;
+        }
+    }
+
+    private class CalculateTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            double sumNegative = 0;
+            double productBetween = 1;
+            
+            int minIndex = 0;
+            int maxIndex = 0;
+            
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] < 0) {
+                    sumNegative += array[i];
+                }
+                
+                if (array[i] < array[minIndex]) {
+                    minIndex = i;
+                }
+                
+                if (array[i] > array[maxIndex]) {
+                    maxIndex = i;
+                }
             }
-            tvZeroCount.setText("Количество нулевых элементов: " + result[0]);
-            tvSumAfterMin.setText("Сумма после минимального элемента: " + result[1]);
+            
+            int start = Math.min(minIndex, maxIndex) + 1;
+            int end = Math.max(minIndex, maxIndex);
+            
+            for (int i = start; i < end; i++) {
+                productBetween *= array[i];
+            }
+            
+            return "Сумма отрицательных: " + sumNegative + 
+                   "\nПроизведение между min и max: " + productBetween;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            resultTextView.setText(result);
+            progressBar.setVisibility(View.GONE);
         }
     }
 }
