@@ -5,38 +5,44 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TimePicker
-        android:id="@+id/timePickerOn"
+    <Button
+        android:id="@+id/btnDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:timePickerMode="spinner" />
+        android:text="Загрузить изображение"
+        android:onClick="btnDownloadClick"
+        android:layout_centerHorizontal="true"/>
 
     <Button
-        android:id="@+id/setBluetoothOnButton"
+        android:id="@+id/btnCalculate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timePickerOn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:text="Установить время включения Bluetooth" />
+        android:text="Рассчитать"
+        android:onClick="btnCalculateClick"
+        android:layout_below="@id/btnDownload"
+        android:layout_centerHorizontal="true"/>
 
-    <TimePicker
-        android:id="@+id/timePickerOff"
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/setBluetoothOnButton"
+        android:layout_below="@id/btnCalculate"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:timePickerMode="spinner" />
+        android:visibility="gone"/>
 
-    <Button
-        android:id="@+id/setBluetoothOffButton"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/imgView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/progressBar"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/resultTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timePickerOff"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:text="Установить время выключения Bluetooth" />
+        android:layout_below="@id/imgView"
+        android:padding="16dp"
+        android:textSize="18sp"/>
 
 </RelativeLayout>
